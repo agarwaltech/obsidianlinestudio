@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obsidian Line — Stories Beyond Reality</title>
+<meta name="description" content="Obsidian Line is an AI film and animation studio building worlds that don't exist yet. AI films, AI animation, world building, and commercial creative work.">
+<meta name="theme-color" content="#000000">
+
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<meta property="og:title" content="Obsidian Line — Stories Beyond Reality">
+<meta property="og:description" content="AI films, AI animation and world building.">
+<meta property="og:image" content="assets/banner.jpg">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OBSIDIAN LINE — DESIGN TOKENS
+   Monochrome obsidian: black glass, cool steel, silver edges,
+   and one signature accent — pure white light.
+   ============================================================ */
+:root{
+  --void:#000000;
+  --bg:#030405;
+  --bg-2:#07080b;
+  --bg-3:#0b0d11;
+  --steel:#141920;          /* cool blue-grey from the banner sky */
+  --line:rgba(255,255,255,.085);
+  --line-2:rgba(255,255,255,.16);
+  --panel:rgba(255,255,255,.022);
+  --panel-2:rgba(255,255,255,.045);
+
+  --text:#f4f6fa;
+  --silver:#c2c8d2;
+  --muted:#868d9a;
+  --dim:#5b616c;
+
+  --beam:#ffffff;
+  --beam-soft:rgba(255,255,255,.72);
+  --beam-glow:rgba(198,214,240,.55);
+  --chill:rgba(150,180,220,.30);   /* faint cool bloom in the artwork */
+
+  --font:'Space Grotesk',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --radius:14px;
+  --max:1200px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--void);color:var(--text);font-family:var(--font);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.62;
+}
+body.is-locked{overflow:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+::selection{background:rgba(255,255,255,.9);color:#000}
+
+/* ============================================================
+   AMBIENT LAYERS
+   ============================================================ */
+.bg{position:fixed;inset:0;z-index:-3;overflow:hidden;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, var(--steel), transparent 60%),
+    radial-gradient(900px 600px at 82% 18%, rgba(120,150,190,.07), transparent 62%),
+    radial-gradient(800px 620px at 12% 78%, rgba(120,150,190,.05), transparent 60%),
+    var(--bg);}
+#stars{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.75}
+.vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 90% 70% at 50% 45%,transparent 40%,rgba(0,0,0,.72) 100%)}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ============================================================
+   THE SIGNATURE BEAM — the brand's one accent
+   ============================================================ */
+.beam-core{position:absolute;top:0;bottom:0;left:50%;width:2px;transform:translateX(-50%);pointer-events:none;
+  background:linear-gradient(180deg,transparent,var(--beam) 18%,var(--beam) 82%,transparent);
+  box-shadow:0 0 18px 3px rgba(255,255,255,.55),0 0 60px 14px var(--beam-glow),0 0 140px 40px rgba(160,190,230,.18);
+  animation:beamBreathe 5.5s ease-in-out infinite}
+.beam-core::before{content:"";position:absolute;inset:-2px -30px;
+  background:linear-gradient(90deg,transparent,rgba(200,220,255,.11),transparent);filter:blur(12px)}
+@keyframes beamBreathe{
+  0%,100%{opacity:.88;filter:brightness(1)}
+  50%{opacity:1;filter:brightness(1.28)}
+}
+/* thin horizontal beam used as a section divider */
+.divider{position:relative;height:1px;max-width:var(--max);margin:0 auto;
+  background:linear-gradient(90deg,transparent,var(--line-2) 20%,var(--line-2) 80%,transparent);
+  transform:scaleX(0);transform-origin:50% 50%;transition:transform 1.3s var(--ease)}
+.divider.in{transform:scaleX(1)}
+.divider::after{content:"";position:absolute;left:50%;top:-2.5px;width:6px;height:6px;border-radius:50%;
+  transform:translateX(-50%);background:#fff;box-shadow:0 0 14px 4px rgba(255,255,255,.6)}
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+#intro{position:fixed;inset:0;z-index:400;background:#000;display:grid;place-items:center;overflow:hidden}
+#intro.gone{opacity:0;visibility:hidden;pointer-events:none}
+.i-stage{position:relative;width:min(560px,86vw);aspect-ratio:1;display:grid;place-items:center}
+.i-stage > *{grid-area:1/1}
+/* the beam that opens the film */
+.i-beam{width:2px;height:0;background:linear-gradient(180deg,transparent,#fff 15%,#fff 85%,transparent);
+  box-shadow:0 0 20px 4px rgba(255,255,255,.7),0 0 70px 18px rgba(180,210,255,.35);opacity:0}
+.i-logo{width:min(340px,62vw);opacity:0;will-change:transform,filter,opacity;
+  filter:drop-shadow(0 0 40px rgba(150,190,240,.28))}
+.i-halo{width:min(400px,70vw);aspect-ratio:1;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,rgba(190,215,255,.16),transparent 62%)}
+.i-word{opacity:0;font-size:clamp(1.35rem,5vw,2.5rem);font-weight:300;letter-spacing:.42em;
+  text-indent:.42em;white-space:nowrap;transform:translateY(-118px);
+  text-shadow:0 0 34px rgba(190,215,255,.4)}
+.i-tag{opacity:0;font-family:var(--mono);font-weight:300;font-size:clamp(8.5px,2vw,11px);
+  letter-spacing:.52em;text-indent:.52em;color:var(--muted);white-space:nowrap;transform:translateY(140px)}
+.i-skip{position:absolute;bottom:36px;right:32px;padding:9px 18px;border-radius:999px;z-index:2;
+  border:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;
+  transition:.3s}
+.i-skip:hover{color:#fff;border-color:var(--line-2);background:rgba(255,255,255,.05)}
+.i-rail{position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(255,255,255,.07);z-index:2}
+.i-rail span{display:block;height:100%;width:0;background:linear-gradient(90deg,rgba(255,255,255,.2),#fff)}
+.i-meta{position:absolute;top:32px;left:32px;font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;
+  color:rgba(255,255,255,.22);z-index:2}
+/* curtain wipe */
+.i-wipe{position:absolute;inset:0;background:#000;transform-origin:50% 100%;z-index:3;pointer-events:none;opacity:0}
+
+/* ============================================================
+   CURSOR
+   ============================================================ */
+.cur,.cur-dot{position:fixed;top:0;left:0;z-index:200;pointer-events:none;border-radius:50%;
+  transform:translate(-50%,-50%);mix-blend-mode:difference}
+.cur{width:34px;height:34px;border:1px solid rgba(255,255,255,.5);
+  transition:width .25s var(--ease),height .25s var(--ease),background .25s}
+.cur.grow{width:70px;height:70px;background:rgba(255,255,255,.16);border-color:transparent}
+.cur-dot{width:4px;height:4px;background:#fff}
+@media(hover:none),(pointer:coarse){.cur,.cur-dot{display:none}}
+
+/* ============================================================
+   SCROLL-LINKED LIGHT
+   ============================================================ */
+.scroll-glow{position:fixed;left:50%;top:0;width:min(1300px,140vw);height:900px;pointer-events:none;z-index:-2;
+  transform:translate(-50%,-50%);will-change:transform;filter:blur(30px);
+  background:radial-gradient(ellipse 50% 50% at 50% 50%,
+    rgba(210,228,255,.13) 0%,rgba(170,200,240,.07) 34%,rgba(140,175,220,.03) 58%,transparent 76%)}
+.rail{position:fixed;right:24px;top:24vh;bottom:24vh;width:1px;z-index:60;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.09) 12%,rgba(255,255,255,.09) 88%,transparent)}
+.rail-fill{position:absolute;left:0;top:0;width:100%;height:0;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.85));
+  box-shadow:0 0 12px rgba(255,255,255,.55)}
+.rail-orb{position:absolute;left:50%;top:0;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);
+  background:#fff;box-shadow:0 0 12px 3px rgba(255,255,255,.85),0 0 36px 12px rgba(180,210,255,.35)}
+.rail-orb::after{content:"";position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.28);animation:orbping 2.4s ease-out infinite}
+@keyframes orbping{0%{transform:scale(.55);opacity:.9}100%{transform:scale(2);opacity:0}}
+.rail-pct{position:absolute;right:15px;top:0;transform:translateY(-50%);font-family:var(--mono);font-size:9px;
+  letter-spacing:.16em;color:var(--silver);text-shadow:0 0 10px rgba(255,255,255,.5);white-space:nowrap}
+.topbeam{position:fixed;top:0;left:0;height:1.5px;width:100%;z-index:110;pointer-events:none;
+  transform:scaleX(0);transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(255,255,255,.25),#fff);box-shadow:0 0 14px rgba(255,255,255,.6)}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 26px}
+section{position:relative;padding:130px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:11px;font-family:var(--mono);font-weight:300;font-size:10px;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--silver);margin-bottom:22px}
+.eyebrow::before{content:"";width:30px;height:1px;background:linear-gradient(90deg,#fff,transparent)}
+h1,h2,h3{margin:0;line-height:1.12;letter-spacing:-.01em}
+h2{font-size:clamp(1.9rem,4.4vw,3.1rem);font-weight:400;letter-spacing:.02em}
+h2 strong{font-weight:600}
+.lead{color:var(--muted);font-size:1.02rem;font-weight:300;max-width:62ch;margin:20px 0 0}
+
+/* light sweep across display text */
+.sweep{position:relative;display:inline-block;
+  background:linear-gradient(100deg,var(--silver) 30%,#fff 47%,#fff 53%,var(--silver) 70%);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:sweep 7s ease-in-out infinite}
+@keyframes sweep{0%,100%{background-position:180% 0}50%{background-position:-40% 0}}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+header{position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:1px solid transparent;
+  transition:background .4s,border-color .4s,backdrop-filter .4s}
+header.stuck{background:rgba(3,4,5,.78);backdrop-filter:blur(20px);border-bottom-color:var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:74px}
+.logo{display:flex;align-items:center;gap:12px;font-size:.9rem;font-weight:400;letter-spacing:.24em}
+.logo img{width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(180,210,255,.45));
+  transition:transform .6s var(--ease)}
+.logo:hover img{transform:rotate(180deg) scale(1.08)}
+.links{display:flex;align-items:center;gap:2px}
+.links a{position:relative;padding:10px 15px;font-size:.8rem;font-weight:300;letter-spacing:.12em;
+  color:var(--muted);border-radius:8px;transition:color .25s,background .25s}
+.links a:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.links a.active{color:var(--text)}
+.links a.active::after{content:"";position:absolute;left:15px;right:15px;bottom:3px;height:1px;background:#fff;
+  box-shadow:0 0 8px rgba(255,255,255,.8)}
+.burger{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:10px;
+  align-items:center;justify-content:center}
+.burger span{display:block;width:16px;height:1px;background:var(--text);position:relative;transition:.3s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:16px;height:1px;background:var(--text);transition:.3s}
+.burger span::before{top:-5px}.burger span::after{top:5px}
+.burger.open span{background:transparent}
+.burger.open span::before{top:0;transform:rotate(45deg)}
+.burger.open span::after{top:0;transform:rotate(-45deg)}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:2px;
+  font-size:.78rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;
+  border:1px solid var(--line-2);position:relative;overflow:hidden;transition:.35s var(--ease)}
+.btn span{position:relative;z-index:1}
+.btn::before{content:"";position:absolute;inset:0;background:#fff;transform:translateY(101%);
+  transition:transform .45s var(--ease)}
+.btn:hover::before{transform:translateY(0)}
+.btn:hover{color:#000;border-color:#fff}
+.btn-solid{background:#fff;color:#000;border-color:#fff}
+.btn-solid::before{background:#000}
+.btn-solid:hover{color:#fff;border-color:#fff}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 90px;overflow:hidden}
+.hero-plate{position:absolute;inset:0;z-index:-1;overflow:hidden}
+.hero-plate img{position:absolute;left:50%;top:50%;width:130%;min-width:1200px;
+  transform:translate(-50%,-50%) scale(1.18);object-fit:cover;
+  /* pushed down so the artwork's own baked-in title sits above the crop */
+  object-position:center 86%;opacity:.5;will-change:transform;filter:contrast(1.1) brightness(.8)}
+.hero-plate::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 32%,rgba(0,0,0,.4) 55%,#000 96%)}
+.hero-beam{position:absolute;top:-10%;bottom:-10%;left:50%;width:2px;transform:translateX(-50%);z-index:-1;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.9) 22%,rgba(255,255,255,.9) 78%,transparent);
+  box-shadow:0 0 22px 5px rgba(255,255,255,.4),0 0 80px 22px rgba(160,195,240,.22);
+  animation:beamBreathe 5.5s ease-in-out infinite}
+.hero-inner{position:relative;text-align:center;width:100%}
+.hero-mark{width:clamp(120px,17vw,190px);margin:0 auto 34px;
+  filter:drop-shadow(0 0 46px rgba(170,205,250,.35));animation:markFloat 9s ease-in-out infinite}
+@keyframes markFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-14px) rotate(4deg)}}
+.hero h1{font-size:clamp(2rem,7.6vw,5rem);font-weight:300;letter-spacing:.2em;text-indent:.2em}
+.hero-tag{margin-top:22px;font-family:var(--mono);font-weight:300;font-size:clamp(9px,2.1vw,12px);
+  letter-spacing:.5em;text-indent:.5em;color:var(--silver)}
+.pillars-strip{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:18px 26px;margin-top:38px}
+.pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:300;font-size:10px;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.pill svg{width:15px;height:15px;stroke:var(--silver);fill:none;stroke-width:1.2}
+.pill-sep{width:1px;height:14px;background:var(--line-2)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:46px}
+.scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:9px;letter-spacing:.3em;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-hint i{display:block;width:1px;height:38px;background:linear-gradient(180deg,#fff,transparent);
+  animation:hint 2.4s ease-in-out infinite}
+@keyframes hint{0%,100%{transform:scaleY(.35);opacity:.4;transform-origin:top}50%{transform:scaleY(1);opacity:1;transform-origin:top}}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;overflow:hidden;
+  background:rgba(255,255,255,.012)}
+.marquee-track{display:flex;gap:50px;width:max-content;animation:slide 42s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes slide{to{transform:translateX(-50%)}}
+.marquee-track span{display:flex;align-items:center;gap:50px;white-space:nowrap;font-family:var(--mono);
+  font-weight:300;font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--dim)}
+.marquee-track span::after{content:"";width:3px;height:3px;border-radius:50%;background:var(--silver);
+  box-shadow:0 0 8px rgba(255,255,255,.7)}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1px;margin-top:60px;
+  background:var(--line);border:1px solid var(--line)}
+.card{position:relative;padding:42px 32px 38px;background:var(--bg-2);overflow:hidden;
+  transition:background .5s var(--ease)}
+.card::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;pointer-events:none;
+  left:var(--mx,50%);top:var(--my,50%);transform:translate(-50%,-50%);opacity:0;transition:opacity .45s;
+  background:radial-gradient(circle,rgba(190,215,255,.09),transparent 66%)}
+/* facet shimmer edge */
+.card::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;opacity:0;transition:opacity .45s;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent)}
+.card:hover{background:var(--bg-3)}
+.card:hover::before,.card:hover::after{opacity:1}
+.card > *{position:relative}
+.card-ico{width:52px;height:52px;display:grid;place-items:center;margin-bottom:26px;
+  border:1px solid var(--line);background:rgba(255,255,255,.02);transition:.45s var(--ease)}
+.card-ico svg{width:24px;height:24px;stroke:var(--silver);fill:none;stroke-width:1.1;transition:.45s}
+.card:hover .card-ico{border-color:var(--line-2);box-shadow:0 0 30px -6px rgba(190,215,255,.35)}
+.card:hover .card-ico svg{stroke:#fff}
+.card h3{font-size:1.12rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px}
+.card p{color:var(--muted);font-size:.92rem;font-weight:300;margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tag{font-family:var(--mono);font-weight:300;font-size:9.5px;letter-spacing:.13em;padding:5px 11px;
+  border:1px solid var(--line);color:var(--dim);text-transform:uppercase}
+.num{position:absolute;top:26px;right:30px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  color:rgba(255,255,255,.13)}
+
+/* commercial band */
+.band{margin-top:1px;padding:44px 32px;border:1px solid var(--line);border-top:none;background:var(--bg-2);
+  display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+.band::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)}
+.band h3{font-size:1.05rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase}
+.band p{color:var(--muted);font-size:.9rem;font-weight:300;margin:9px 0 0;max-width:56ch}
+
+/* ============================================================
+   BRAND PLATE (the banner, shown properly)
+   ============================================================ */
+.plate{position:relative;margin-top:0;border:1px solid var(--line);overflow:hidden;background:#000}
+.plate img{width:100%;opacity:0;transform:scale(1.1);
+  transition:opacity 1.6s var(--ease),transform 2.4s var(--ease)}
+.plate.in img{opacity:1;transform:scale(1)}
+.plate::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,#000,transparent 14%,transparent 86%,#000)}
+.plate-scan{position:absolute;top:0;bottom:0;width:120px;pointer-events:none;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);
+  animation:plateScan 7s ease-in-out infinite}
+@keyframes plateScan{0%{transform:translateX(-140px)}100%{transform:translateX(calc(100vw + 140px))}}
+
+/* ============================================================
+   WORK
+   ============================================================ */
+.work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;margin-top:60px;
+  background:var(--line);border:1px solid var(--line)}
+.tile{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--bg-2);
+  display:flex;align-items:flex-end;padding:26px;transition:.5s var(--ease)}
+.tile::before{content:"";position:absolute;inset:0;transition:.6s var(--ease);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 110%,rgba(170,200,240,.16),transparent 70%),
+    linear-gradient(160deg,#0d1015,#050607)}
+.tile::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;transform:translateX(-50%) scaleY(.25);
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.75),transparent);opacity:0;
+  transition:opacity .5s,transform .7s var(--ease)}
+.tile:hover::after{opacity:1;transform:translateX(-50%) scaleY(1)}
+.tile:hover{background:var(--bg-3)}
+.tile-body{position:relative;z-index:1}
+.tile h3{font-size:1rem;font-weight:500;letter-spacing:.07em}
+.tile p{margin:7px 0 0;font-family:var(--mono);font-weight:300;font-size:9.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--dim)}
+.tile-tag{position:absolute;top:22px;left:26px;z-index:1;font-family:var(--mono);font-size:9px;
+  letter-spacing:.22em;padding:5px 11px;border:1px solid var(--line);color:var(--silver);
+  background:rgba(0,0,0,.4);text-transform:uppercase}
+
+/* ============================================================
+   PROCESS
+   ============================================================ */
+.steps{margin-top:60px;position:relative;padding-left:38px}
+.steps::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;
+  background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.14),transparent)}
+.step{position:relative;padding-bottom:46px}
+.step:last-child{padding-bottom:0}
+.step::before{content:"";position:absolute;left:-36px;top:9px;width:7px;height:7px;border-radius:50%;
+  background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.07),0 0 14px 2px rgba(255,255,255,.5)}
+.step .when{font-family:var(--mono);font-weight:300;font-size:9.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--dim)}
+.step h3{font-size:1.05rem;font-weight:500;letter-spacing:.07em;margin-top:6px}
+.step p{color:var(--muted);font-size:.92rem;font-weight:300;margin:9px 0 0;max-width:64ch}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;margin-top:60px;
+  background:var(--line);border:1px solid var(--line)}
+.stat{padding:34px 26px;background:var(--bg-2);text-align:center}
+.stat b{display:block;font-size:2.1rem;font-weight:300;letter-spacing:.02em}
+.stat span{font-family:var(--mono);font-weight:300;font-size:9.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--dim)}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-shell{display:grid;grid-template-columns:1fr 1.15fr;gap:50px;margin-top:60px;align-items:start}
+form{padding:38px;border:1px solid var(--line);background:var(--bg-2)}
+.field{margin-bottom:20px}
+.field label{display:block;font-family:var(--mono);font-weight:300;font-size:9.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+.field input,.field select,.field textarea{width:100%;padding:14px 16px;background:rgba(255,255,255,.03);
+  border:1px solid var(--line);color:var(--text);font-family:inherit;font-weight:300;font-size:.92rem;
+  border-radius:2px;transition:border-color .3s,box-shadow .3s,background .3s}
+.field textarea{resize:vertical;min-height:126px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:rgba(255,255,255,.55);
+  background:rgba(255,255,255,.05);box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 26px -8px rgba(190,215,255,.5)}
+.field select{appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23868d9a' stroke-width='1.4'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center}
+.field select option{background:#0b0d11}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hp{position:absolute;left:-9999px;opacity:0}
+.form-note{font-size:.76rem;font-weight:300;color:var(--dim);margin:16px 0 0}
+#status{margin-top:18px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;display:none}
+#status.show{display:block}
+#status.ok{color:#fff}
+#status.err{color:#e8a0a0}
+#status.busy{color:var(--silver)}
+.contact-side p{color:var(--muted);font-weight:300}
+.direct{margin-top:32px;display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line)}
+.direct a,.direct div{display:flex;align-items:center;gap:16px;padding:20px;background:var(--bg-2);transition:.35s var(--ease)}
+.direct a:hover{background:var(--bg-3);padding-left:26px}
+.direct .ico{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);flex-shrink:0}
+.direct .ico svg{width:17px;height:17px;stroke:var(--silver);fill:none;stroke-width:1.2}
+.direct .k{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.direct .v{font-size:.92rem;font-weight:300;letter-spacing:.03em}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{border-top:1px solid var(--line);padding:54px 0 44px;position:relative}
+.foot-logo{width:44px;margin:0 auto 26px;opacity:.55;filter:drop-shadow(0 0 20px rgba(170,205,250,.3))}
+.foot{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-weight:300;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.foot a:hover{color:#fff}
+
+/* ============================================================
+   REVEAL
+   ============================================================ */
+.rv{opacity:0;transform:translateY(30px);
+  transition:opacity .95s var(--ease),transform .95s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:960px){.contact-shell{grid-template-columns:1fr}section{padding:96px 0}}
+@media(max-width:760px){
+  .burger{display:flex}
+  .links{position:fixed;inset:74px 0 auto;flex-direction:column;align-items:stretch;gap:0;padding:16px 26px 30px;
+    background:rgba(3,4,5,.98);backdrop-filter:blur(22px);border-bottom:1px solid var(--line);
+    transform:translateY(-130%);transition:transform .45s var(--ease)}
+  .links.open{transform:none}
+  .links a{padding:16px 4px;font-size:.95rem}
+  .links a.active::after{left:4px;right:auto;width:20px}
+  .rail{display:none}
+  .row-2{grid-template-columns:1fr}
+  form{padding:26px}
+  .hero-plate img{width:220%}
+  .plate-scan{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+  .divider{transform:scaleX(1)}
+  .plate img{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="scroll-glow" id="scrollGlow" aria-hidden="true"></div>
+<div class="topbeam" id="topbeam" aria-hidden="true"></div>
+<div class="rail" aria-hidden="true">
+  <div class="rail-fill" id="railFill"></div>
+  <div class="rail-orb" id="railOrb"><span class="rail-pct" id="railPct">0%</span></div>
+</div>
+
+<div class="cur" aria-hidden="true"></div>
+<div class="cur-dot" aria-hidden="true"></div>
+
+<!-- ============================ INTRO ============================ -->
+<div id="intro" role="presentation">
+  <span class="i-meta">OBSIDIAN_LINE // MMXXVI</span>
+  <div class="i-stage">
+    <div class="i-halo"></div>
+    <div class="i-beam"></div>
+    <img class="i-logo" src="assets/logo-mark.png" alt="">
+    <div class="i-word">OBSIDIAN LINE</div>
+    <div class="i-tag">STORIES BEYOND REALITY</div>
+  </div>
+  <div class="i-wipe"></div>
+  <button class="i-skip" id="skipIntro" type="button">SKIP</button>
+  <div class="i-rail"><span id="introBar"></span></div>
+</div>
+
+<!-- ============================ NAV ============================ -->
+<header id="hdr">
+  <div class="wrap nav">
+    <a href="#home" class="logo"><img src="assets/logo-mark.png" alt="Obsidian Line"> OBSIDIAN LINE</a>
+    <nav class="links" id="links">
+      <a href="#home">Home</a>
+      <a href="#work">Work</a>
+      <a href="#studio">Studio</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<main>
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="home">
+  <div class="hero-plate" aria-hidden="true"><img src="assets/banner.jpg" alt="" id="plateImg"></div>
+  <div class="hero-beam" aria-hidden="true"></div>
+
+  <div class="wrap hero-inner">
+    <img class="hero-mark rv" src="assets/logo-mark.png" alt="Obsidian Line emblem">
+    <h1 class="rv"><span class="sweep">OBSIDIAN LINE</span></h1>
+    <p class="hero-tag rv">STORIES BEYOND REALITY</p>
+
+    <div class="pillars-strip rv">
+      <span class="pill"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="1"/><path d="M2 10h20M7 6l-2 4M13 6l-2 4M19 6l-2 4"/></svg> AI Films</span>
+      <span class="pill-sep"></span>
+      <span class="pill"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v20M3 7l9 5 9-5"/></svg> AI Animation</span>
+      <span class="pill-sep"></span>
+      <span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20a15 15 0 010-20"/></svg> World Building</span>
+    </div>
+
+    <div class="hero-cta rv">
+      <a href="#work" class="btn btn-solid"><span>Enter the archive</span></a>
+      <a href="#contact" class="btn"><span>Work with us</span></a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true"><i></i>SCROLL</div>
+</section>
+
+<!-- ============================ MARQUEE ============================ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>AI Films</span><span>AI Animation</span><span>World Building</span><span>Cinematic Sequences</span>
+    <span>Concept Worlds</span><span>Motion Design</span><span>Sound &amp; Score</span><span>Commercial Work</span>
+    <span>AI Films</span><span>AI Animation</span><span>World Building</span><span>Cinematic Sequences</span>
+    <span>Concept Worlds</span><span>Motion Design</span><span>Sound &amp; Score</span><span>Commercial Work</span>
+  </div>
+</div>
+
+<!-- ============================ WORK ============================ -->
+<section id="work">
+  <div class="wrap">
+    <span class="eyebrow rv">The archive</span>
+    <h2 class="rv">Worlds we've <strong>built.</strong></h2>
+    <p class="lead rv">Each tile is a drop-in slot — swap in your own thumbnail or video poster and point it at the film.</p>
+
+    <div class="work-grid">
+      <a class="tile rv" href="#contact"><span class="tile-tag">AI Film</span>
+        <div class="tile-body"><h3>The Last Signal</h3><p>Short film · 8 min</p></div></a>
+      <a class="tile rv" href="#contact"><span class="tile-tag">World Building</span>
+        <div class="tile-body"><h3>Obsidian Reaches</h3><p>Concept world · ongoing</p></div></a>
+      <a class="tile rv" href="#contact"><span class="tile-tag">AI Animation</span>
+        <div class="tile-body"><h3>Fracture</h3><p>Animated sequence · 3 min</p></div></a>
+      <a class="tile rv" href="#contact"><span class="tile-tag">AI Film</span>
+        <div class="tile-body"><h3>Beneath the Static</h3><p>Short film · 12 min</p></div></a>
+      <a class="tile rv" href="#contact"><span class="tile-tag">Commercial</span>
+        <div class="tile-body"><h3>Product launch film</h3><p>Brand work · 60s</p></div></a>
+      <a class="tile rv" href="#contact"><span class="tile-tag">World Building</span>
+        <div class="tile-body"><h3>Cold Cathedral</h3><p>Environment study</p></div></a>
+    </div>
+
+    <div class="stats">
+      <div class="stat rv"><b data-count="40" data-suffix="+">0</b><span>Films released</span></div>
+      <div class="stat rv"><b data-count="2" data-suffix="M+">0</b><span>Views</span></div>
+      <div class="stat rv"><b data-count="12" data-suffix="">0</b><span>Worlds built</span></div>
+      <div class="stat rv"><b data-count="48" data-suffix="h">0</b><span>Avg. first cut</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider rv-div" aria-hidden="true"></div>
+
+<!-- ============================ STUDIO ============================ -->
+<section id="studio">
+  <div class="wrap">
+    <span class="eyebrow rv">What we make</span>
+    <h2 class="rv">Three lines of <strong>work.</strong></h2>
+    <p class="lead rv">Obsidian Line is a small AI-native studio. We write, direct, generate, edit and score — the whole pipeline under one roof, which is why things move fast.</p>
+
+    <div class="grid-3">
+      <article class="card rv">
+        <span class="num">01</span>
+        <div class="card-ico"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="1"/><path d="M2 10h20M7 6l-2 4M13 6l-2 4M19 6l-2 4"/></svg></div>
+        <h3>AI Films</h3>
+        <p>Original short films made end to end with generative tools — story, shot design, generation, edit, colour and sound. Narrative first, technology second.</p>
+        <div class="tags"><span class="tag">Story</span><span class="tag">Shot design</span><span class="tag">Edit</span><span class="tag">Score</span></div>
+      </article>
+
+      <article class="card rv">
+        <span class="num">02</span>
+        <div class="card-ico"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v20M3 7l9 5 9-5"/></svg></div>
+        <h3>AI Animation</h3>
+        <p>Animated sequences, title work and motion pieces — stylised or photoreal, built to hold up frame by frame rather than only in a thumbnail.</p>
+        <div class="tags"><span class="tag">Sequences</span><span class="tag">Titles</span><span class="tag">Motion</span><span class="tag">Compositing</span></div>
+      </article>
+
+      <article class="card rv">
+        <span class="num">03</span>
+        <div class="card-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20a15 15 0 010-20"/></svg></div>
+        <h3>World Building</h3>
+        <p>Places before plots. Environments, factions, languages and visual rules — a coherent world you can shoot a hundred stories inside without it falling apart.</p>
+        <div class="tags"><span class="tag">Environments</span><span class="tag">Lore</span><span class="tag">Design rules</span><span class="tag">Bibles</span></div>
+      </article>
+    </div>
+
+    <div class="band rv">
+      <div>
+        <h3>Commercial &amp; Client Work</h3>
+        <p>We also take on brand films, ad creative, product video, photography and identity design — the same pipeline, pointed at your product. Budgets and timelines discussed openly on the first call.</p>
+      </div>
+      <a href="#contact" class="btn"><span>Enquire</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- brand plate -->
+<div class="plate" id="plate">
+  <div class="plate-scan" aria-hidden="true"></div>
+  <img src="assets/banner.jpg" alt="Obsidian Line — Stories Beyond Reality">
+</div>
+
+<!-- ============================ PROCESS ============================ -->
+<section id="process">
+  <div class="wrap">
+    <span class="eyebrow rv">How it runs</span>
+    <h2 class="rv">From idea to <strong>final frame.</strong></h2>
+
+    <div class="steps">
+      <div class="step rv"><span class="when">Phase 01</span><h3>The Call</h3>
+        <p>Thirty minutes. What the story is, who it's for, and what it has to do. You leave with a scope and a number — no proposal theatre.</p></div>
+      <div class="step rv"><span class="when">Phase 02</span><h3>World &amp; Direction</h3>
+        <p>Reference plates, look development and a shot list. You approve the world and the direction before a single frame gets generated.</p></div>
+      <div class="step rv"><span class="when">Phase 03</span><h3>Generation &amp; Assembly</h3>
+        <p>Shots generated, curated and cut. First assembly lands within 48 hours so you're reacting to something real, early.</p></div>
+      <div class="step rv"><span class="when">Phase 04</span><h3>Finish &amp; Deliver</h3>
+        <p>Grade, sound, score and export in every ratio you need. Two revision rounds included, masters handed over clean and organised.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider rv-div" aria-hidden="true"></div>
+
+<!-- ============================ CONTACT ============================ -->
+<section id="contact">
+  <div class="wrap">
+    <span class="eyebrow rv">Transmission</span>
+    <h2 class="rv">Tell us what you're <strong>building.</strong></h2>
+
+    <div class="contact-shell">
+      <div class="contact-side rv">
+        <p>Send a brief — even a rough one. Films, animation, world building or commercial work, it all comes to the same inbox. We reply to everything within one business day, and if we're not right for it we'll say so.</p>
+        <div class="direct">
+          <a href="mailto:contact@obsidianlinestudio.in">
+            <span class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="M2 6l10 7 10-7"/></svg></span>
+            <span><span class="k">Email</span><span class="v">contact@obsidianlinestudio.in</span></span></a>
+          <div>
+            <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <span><span class="k">Turnaround</span><span class="v">First cut in 48 hours</span></span></div>
+          <div>
+            <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v20"/></svg></span>
+            <span><span class="k">Studio</span><span class="v">AI-native · fully remote</span></span></div>
+        </div>
+      </div>
+
+      <form id="contactForm" class="rv" novalidate>
+        <!-- Get a free key at https://web3forms.com and paste it below -->
+        <input type="hidden" name="access_key" value="3938d147-351e-4715-8109-6ab77866c117">
+        <input type="hidden" name="subject" value="New enquiry — Obsidian Line">
+        <input type="hidden" name="from_name" value="Obsidian Line">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
+
+        <div class="row-2">
+          <div class="field"><label for="name">Name</label>
+            <input id="name" name="name" type="text" required placeholder="Your name"></div>
+          <div class="field"><label for="email">Email</label>
+            <input id="email" name="email" type="email" required placeholder="you@domain.com"></div>
+        </div>
+        <div class="row-2">
+          <div class="field"><label for="service">Enquiry type</label>
+            <select id="service" name="service" required>
+              <option value="">Select…</option>
+              <option>AI Film</option>
+              <option>AI Animation</option>
+              <option>World Building</option>
+              <option>Commercial / Ad creative</option>
+              <option>Photography</option>
+              <option>Collaboration</option>
+            </select></div>
+          <div class="field"><label for="budget">Budget</label>
+            <select id="budget" name="budget">
+              <option value="">Optional</option>
+              <option>Under ₹50k</option>
+              <option>₹50k – ₹2L</option>
+              <option>₹2L – ₹5L</option>
+              <option>₹5L+</option>
+            </select></div>
+        </div>
+        <div class="field"><label for="message">The brief</label>
+          <textarea id="message" name="message" required placeholder="What are you making, who is it for, and when do you need it?"></textarea></div>
+
+        <button type="submit" class="btn btn-solid" id="submitBtn" style="width:100%;justify-content:center"><span>Send transmission</span></button>
+        <div id="status" role="status" aria-live="polite"></div>
+        <p class="form-note">Straight to our inbox. No lists, no newsletters.</p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img class="foot-logo" src="assets/logo-mark.png" alt="">
+    <div class="foot">
+      <span>© <span id="yr">2026</span> Obsidian Line</span>
+      <span>Stories Beyond Reality</span>
+      <span><a href="#home">Back to top ↑</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(s){ return document.querySelector(s); };
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* ============================================================
+     STARFIELD — slow cosmic drift behind everything
+     ============================================================ */
+  (function starfield(){
+    var cv = document.getElementById('stars');
+    if(!cv || !cv.getContext) return;
+    var ctx = cv.getContext('2d'), stars = [], dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function build(){
+      cv.width  = innerWidth  * dpr;
+      cv.height = innerHeight * dpr;
+      cv.style.width  = innerWidth + 'px';
+      cv.style.height = innerHeight + 'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      var count = Math.min(Math.round(innerWidth * innerHeight / 9000), 190);
+      stars = [];
+      for(var i=0;i<count;i++){
+        stars.push({
+          x: Math.random()*innerWidth,
+          y: Math.random()*innerHeight,
+          r: Math.random()*1.15 + 0.25,
+          a: Math.random()*0.55 + 0.12,
+          tw: Math.random()*0.014 + 0.003,
+          dir: Math.random() > .5 ? 1 : -1,
+          vy: (Math.random()*0.06 + 0.012)
+        });
+      }
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      for(var i=0;i<stars.length;i++){
+        var s = stars[i];
+        s.a += s.tw * s.dir;
+        if(s.a > 0.75){ s.a = 0.75; s.dir = -1; }
+        if(s.a < 0.08){ s.a = 0.08; s.dir =  1; }
+        s.y -= s.vy;
+        if(s.y < -2){ s.y = innerHeight + 2; s.x = Math.random()*innerWidth; }
+        // faint cool tint, matching the artwork
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(214,228,248,' + s.a.toFixed(3) + ')';
+        ctx.arc(s.x, s.y, s.r, 0, 6.2832);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+
+    build();
+    addEventListener('resize', build, {passive:true});
+    if(reduce){ draw = null; ctx.globalAlpha = 1;
+      for(var i=0;i<stars.length;i++){ var s=stars[i];
+        ctx.beginPath(); ctx.fillStyle='rgba(214,228,248,'+s.a.toFixed(3)+')';
+        ctx.arc(s.x,s.y,s.r,0,6.2832); ctx.fill(); }
+    } else {
+      requestAnimationFrame(draw);
+    }
+  })();
+
+  /* ============================================================
+     INTRO — the beam opens, the emblem resolves, the wipe lifts
+     Set REPLAY = false to show it once per browser session.
+     ============================================================ */
+  var REPLAY  = true;
+  var intro   = $('#intro');
+  var stage   = $('.i-stage');
+  var iBeam   = $('.i-beam');
+  var iHalo   = $('.i-halo');
+  var iLogo   = $('.i-logo');
+  var iWord   = $('.i-word');
+  var iTag    = $('.i-tag');
+  var iWipe   = $('.i-wipe');
+  var iBar    = $('#introBar');
+  var TOTAL   = 6900;
+  var skipped = false;
+
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  function anim(el, frames, opts){
+    opts = opts || {};
+    if(opts.fill    === undefined) opts.fill = 'forwards';
+    if(opts.easing  === undefined) opts.easing = 'cubic-bezier(.16,1,.3,1)';
+    return el.animate(frames, opts);
+  }
+  function fin(a){ return a.finished ? a.finished.catch(function(){}) : wait(a.effect.getTiming().duration); }
+
+  function endIntro(ms){
+    document.body.classList.remove('is-locked');
+    intro.style.transition = 'opacity '+ms+'ms ease, visibility '+ms+'ms';
+    intro.classList.add('gone');
+    setTimeout(function(){ if(intro.parentNode) intro.parentNode.removeChild(intro); }, ms + 80);
+  }
+
+  async function playIntro(){
+    document.body.classList.add('is-locked');
+    anim(iBar, [{width:'0%'},{width:'100%'}], {duration:TOTAL, easing:'linear'});
+
+    // 1. a single point of light stretches into the beam
+    iBeam.style.opacity = 1;
+    await fin(anim(iBeam, [{height:'0px'},{height:'62%'}], {duration:900}));
+    if(skipped) return;
+
+    // 2. beam opens to full height, halo blooms behind it
+    anim(iBeam, [{height:'62%'},{height:'104%'}], {duration:700});
+    anim(iHalo, [{opacity:0,transform:'scale(.4)'},{opacity:1,transform:'scale(1)'}], {duration:1100});
+    await wait(700);
+    if(skipped) return;
+
+    // 3. the emblem resolves out of the light
+    iLogo.style.opacity = 1;
+    anim(iLogo, [
+      {opacity:0, transform:'scale(.55) rotate(-22deg)', filter:'blur(22px) brightness(2.4)'},
+      {opacity:1, transform:'scale(1.06) rotate(3deg)',  filter:'blur(0px) brightness(1.35)', offset:.72},
+      {opacity:1, transform:'scale(1) rotate(0deg)',     filter:'blur(0px) brightness(1)'}
+    ], {duration:1500});
+    await wait(1200);
+    if(skipped) return;
+
+    // 4. beam narrows behind the emblem, halo settles
+    anim(iBeam, [{opacity:1},{opacity:.55}], {duration:600, fill:'forwards'});
+    anim(iHalo, [{opacity:1},{opacity:.45}], {duration:600});
+
+    // 5. wordmark tracks open
+    iWord.style.opacity = 1;
+    anim(iWord, [
+      {opacity:0, letterSpacing:'1.1em', filter:'blur(12px)', transform:'translateY(-118px)'},
+      {opacity:1, letterSpacing:'.42em', filter:'blur(0px)',  transform:'translateY(-118px)'}
+    ], {duration:1100});
+    await wait(780);
+    if(skipped) return;
+
+    // 6. tagline surfaces
+    iTag.style.opacity = 1;
+    anim(iTag, [
+      {opacity:0, transform:'translateY(160px)', filter:'blur(8px)'},
+      {opacity:1, transform:'translateY(140px)', filter:'blur(0px)'}
+    ], {duration:900});
+    await wait(1250);
+    if(skipped) return;
+
+    // 7. everything collapses back into the beam, then the wipe lifts
+    anim(stage, [{opacity:1, transform:'scale(1)'},{opacity:0, transform:'scale(1.14)'}], {duration:800});
+    await wait(320);
+    if(skipped) return;
+    iWipe.style.opacity = 1;
+    anim(iWipe, [{transform:'scaleY(1)'},{transform:'scaleY(0)'}], {duration:820, easing:'cubic-bezier(.7,0,.2,1)'});
+    await wait(560);
+    endIntro(360);
+  }
+
+  function skip(){
+    if(skipped) return;
+    skipped = true;
+    if(intro.getAnimations) intro.getAnimations({subtree:true}).forEach(function(a){ a.cancel(); });
+    endIntro(340);
+  }
+  $('#skipIntro').addEventListener('click', skip);
+  document.addEventListener('keydown', function(e){
+    if(!skipped && (e.key === 'Escape' || e.key === 'Enter')) skip();
+  });
+
+  var seen = !REPLAY && sessionStorage.getItem('ol_intro') === '1';
+  if(reduce || seen || !intro.animate){
+    endIntro(reduce ? 200 : 0);
+  } else {
+    try { sessionStorage.setItem('ol_intro','1'); } catch(err){}
+    playIntro();
+  }
+
+  /* ============================================================
+     SCROLL LIGHT + PARALLAX + HEADER
+     ============================================================ */
+  var hdr      = $('#hdr');
+  var glow     = $('#scrollGlow');
+  var topbeam  = $('#topbeam');
+  var railFill = $('#railFill');
+  var railOrb  = $('#railOrb');
+  var railPct  = $('#railPct');
+  var plateImg = $('#plateImg');
+  var target = 0, current = 0, ticking = false;
+
+  function measure(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    target = max > 0 ? Math.min(Math.max(scrollY / max, 0), 1) : 0;
+  }
+  function paint(){
+    current += (target - current) * (reduce ? 1 : 0.085);
+    if(Math.abs(target - current) < 0.0004) current = target;
+
+    var y = current * innerHeight * 1.4 + innerHeight * 0.2;
+    glow.style.transform = 'translate(-50%,-50%) translateY(' + y.toFixed(1) + 'px)';
+    glow.style.opacity   = (0.5 + current * 0.5).toFixed(3);
+
+    topbeam.style.transform = 'scaleX(' + current.toFixed(4) + ')';
+    railFill.style.height   = (current*100).toFixed(2) + '%';
+    railOrb.style.top       = (current*100).toFixed(2) + '%';
+    railPct.textContent     = Math.round(current*100) + '%';
+
+    // hero plate drifts slower than the page
+    if(plateImg && scrollY < innerHeight * 1.3){
+      var p = scrollY * 0.28;
+      plateImg.style.transform = 'translate(-50%,-50%) scale(1.18) translateY(' + p.toFixed(1) + 'px)';
+    }
+
+    ticking = false;
+    if(current !== target) request();
+  }
+  function request(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }
+
+  function onScroll(){
+    hdr.classList.toggle('stuck', scrollY > 24);
+    measure(); request(); spy();
+  }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', function(){ measure(); request(); }, {passive:true});
+
+  /* ---------- mobile nav ---------- */
+  var burger = $('#burger'), links = $('#links');
+  burger.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('is-locked', open);
+  });
+  links.addEventListener('click', function(e){
+    if(e.target.tagName === 'A'){
+      links.classList.remove('open'); burger.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+      document.body.classList.remove('is-locked');
+    }
+  });
+
+  /* ---------- scroll spy ---------- */
+  var navLinks = [].slice.call(links.querySelectorAll('a'));
+  var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function spy(){
+    var y = scrollY + innerHeight * 0.3, idx = 0;
+    sections.forEach(function(s,i){ if(s && s.offsetTop <= y) idx = i; });
+    navLinks.forEach(function(a,i){ a.classList.toggle('active', i === idx); });
+  }
+  spy(); measure(); current = target; request();
+
+  /* ============================================================
+     REVEALS
+     ============================================================ */
+  var revealables = document.querySelectorAll('.rv, .rv-div, .plate');
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        var el = en.target;
+        if(el.classList.contains('rv')){
+          var sibs = [].slice.call(el.parentElement.children).filter(function(n){
+            return n.classList && n.classList.contains('rv');
+          });
+          el.style.transitionDelay = (Math.min(sibs.indexOf(el), 6) * 85) + 'ms';
+        }
+        el.classList.add('in');
+        io.unobserve(el);
+      });
+    }, {threshold:0.1, rootMargin:'0px 0px -70px'});
+    revealables.forEach(function(el){ io.observe(el); });
+  } else {
+    revealables.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------- counters ---------- */
+  var counters = document.querySelectorAll('[data-count]');
+  function runCount(el){
+    var t = parseFloat(el.getAttribute('data-count'));
+    var sfx = el.getAttribute('data-suffix') || '';
+    if(reduce){ el.textContent = t + sfx; return; }
+    var start = performance.now();
+    (function tick(now){
+      var p = Math.min((now - start)/1600, 1);
+      el.textContent = Math.round(t * (1 - Math.pow(1-p,3))) + sfx;
+      if(p < 1) requestAnimationFrame(tick);
+    })(start);
+  }
+  if('IntersectionObserver' in window){
+    var cio = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ runCount(e.target); cio.unobserve(e.target); } });
+    }, {threshold:0.5});
+    counters.forEach(function(c){ cio.observe(c); });
+  } else { counters.forEach(runCount); }
+
+  /* ---------- cursor ---------- */
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches && !reduce){
+    var ring = $('.cur'), dot = $('.cur-dot');
+    var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+    document.addEventListener('mousemove', function(e){
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate('+mx+'px,'+my+'px) translate(-50%,-50%)';
+    });
+    (function raf(){
+      rx += (mx-rx)*0.15; ry += (my-ry)*0.15;
+      ring.style.transform = 'translate('+rx.toFixed(1)+'px,'+ry.toFixed(1)+'px) translate(-50%,-50%)';
+      requestAnimationFrame(raf);
+    })();
+    document.querySelectorAll('a,button,input,select,textarea,.card,.tile').forEach(function(el){
+      el.addEventListener('mouseenter', function(){ ring.classList.add('grow'); });
+      el.addEventListener('mouseleave', function(){ ring.classList.remove('grow'); });
+    });
+  }
+
+  /* ---------- card spotlight ---------- */
+  document.querySelectorAll('.card').forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left)+'px');
+      card.style.setProperty('--my', (e.clientY - r.top)+'px');
+    });
+  });
+
+  /* ============================================================
+     CONTACT FORM (Web3Forms)
+     ============================================================ */
+  var form = $('#contactForm'), statusEl = $('#status'), btn = $('#submitBtn');
+  function say(msg, kind){ statusEl.textContent = msg; statusEl.className = 'show ' + kind; }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!form.name.value.trim() || !form.email.value.trim() || !form.message.value.trim() || !form.service.value){
+      say('✗ Name, email, enquiry type and brief are required.', 'err'); return;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.value)){
+      say('✗ That email address does not look right.', 'err'); return;
+    }
+    var key = form.access_key.value;
+    if(!key || key === 'YOUR_WEB3FORMS_ACCESS_KEY'){
+      say('⚙ Form not connected yet — add your Web3Forms key in index.html.', 'err'); return;
+    }
+
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Sending…';
+    say('› Transmitting…', 'busy');
+
+    fetch('https://api.web3forms.com/submit', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify(Object.fromEntries(new FormData(form)))
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.success){ say('✓ Received. We’ll reply within one business day.', 'ok'); form.reset(); }
+      else { say('✗ ' + (d.message || 'Something went wrong.'), 'err'); }
+    })
+    .catch(function(){ say('✗ Network error. Email contact@obsidianlinestudio.in instead.', 'err'); })
+    .finally(function(){
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Send transmission';
+    });
+  });
+})();
+</script>
+</body>
+</html>
