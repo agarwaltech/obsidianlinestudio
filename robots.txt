@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://obsidianlinestudio.in/sitemap.xml
